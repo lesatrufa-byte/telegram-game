@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fantasy RPG Game</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=MedievalSharp&family=UnifrakturMaguntia&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'MedievalSharp', cursive;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: #fff;
+            min-height: 100vh;
+            background-size: cover;
+            background-position: center;
+            transition: background-image 0.5s ease;
+            padding: 10px;
+        }
+        
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 2px solid #ffd700;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            border-bottom: 3px solid #ffd700;
+        }
+        
+        .title {
+            font-family: 'UnifrakturMaguntia', cursive;
+            font-size: 2.2em;
+            color: #ffd700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            margin-bottom: 10px;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .stat-card {
+            background: rgba(255, 215, 0, 0.1);
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid #ffd700;
+        }
+        
+        .stat-value {
+            font-size: 1.3em;
+            color: #ffd700;
+            font-weight: bold;
+        }
+        
+        .game-buttons {
+            display: grid;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .game-btn {
+            background: linear-gradient(45deg, #ff6b6b, #ffd700);
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            color: #000;
+            font-family: 'MedievalSharp', cursive;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
+        }
+        
+        .game-btn:active {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+        }
+        
+        .customization {
+            margin: 20px 0;
+        }
+        
+        .bg-upload {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .bg-btn {
+            background: #4ecdc4;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            margin: 5px;
+            font-family: 'MedievalSharp', cursive;
+        }
+        
+        .result {
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            text-align: center;
+            display: none;
+        }
+        
+        .success {
+            background: rgba(46, 204, 113, 0.2);
+            border: 1px solid #2ecc71;
+        }
+        
+        .failure {
+            background: rgba(231, 76, 60, 0.2);
+            border: 1px solid #e74c3c;
+        }
+        
+        .treasure {
+            background: rgba(241, 196, 15, 0.2);
+            border: 1px solid #f1c40f;
+        }
+        
+        .xp-bar {
+            width: 100%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        
+        .xp-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #ffd700, #ff6b6b);
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">Fantasy RPG</h1>
+            <p>Эпическое приключение начинается!</p>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <div>Уровень</div>
+                <div class="stat-value" id="level">1</div>
+            </div>
+            <div class="stat-card">
+                <div>Монеты</div>
+                <div class="stat-value" id="coins">100</div>
+            </div>
+            <div class="stat-card">
+                <div>Опыт</div>
+                <div class="stat-value" id="exp">0/100</div>
+            </div>
+            <div class="stat-card">
+                <div>Фон</div>
+                <div class="stat-value" id="bg-name">default</div>
+            </div>
+        </div>
+        
+        <div class="xp-bar">
+            <div class="xp-progress" id="xp-bar"></div>
+        </div>
+        
+        <div class="game-buttons">
+            <button class="game-btn" onclick="startBattle()">⚔️ Битва с монстром</button>
+            <button class="game-btn" onclick="findTreasure()">💰 Найти сокровище</button>
+            <button class="game-btn" onclick="magicQuest()">🔮 Магический квест</button>
+        </div>
+        
+        <div class="result" id="result">
+            <h3 id="result-title">Результат</h3>
+            <p id="result-text"></p>
+            <button class="bg-btn" onclick="hideResult()">Продолжить</button>
+        </div>
+        
+        <div class="customization">
+            <div class="bg-upload">
+                <h3>🎨 Настройка фона</h3>
+                <input type="file" id="bg-upload" accept="image/*" style="display: none;" onchange="uploadBackground(this.files[0])">
+                <button class="bg-btn" onclick="document.getElementById('bg-upload').click()">
+                    📁 Загрузить фон
+                </button>
+                <button class="bg-btn" onclick="changeBackground('forest')">🌲 Лес</button>
+                <button class="bg-btn" onclick="changeBackground('ocean')">🌊 Океан</button>
+                <button class="bg-btn" onclick="changeBackground('fire')">🔥 Огонь</button>
+                <button class="bg-btn" onclick="changeBackground('default')">🔮 Стандарт</button>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 20px;">
+            <button class="game-btn" onclick="saveGame()">💾 Сохранить игру</button>
+        </div>
+    </div>
+
+    <script>
+        // Данные игры
+        let gameData = {
+            coins: 100,
+            level: 1,
+            experience: 0,
+            background: 'default',
+            expToNextLevel: 100
+        };
+
+        // Загрузка данных
+        function loadGameData() {
+            const saved = localStorage.getItem('fantasyRpgSave');
+            if (saved) {
+                gameData = {...gameData, ...JSON.parse(saved)};
+            }
+            updateUI();
+        }
+
+        // Обновление интерфейса
+        function updateUI() {
+            document.getElementById('level').textContent = gameData.level;
+            document.getElementById('coins').textContent = gameData.coins;
+            document.getElementById('exp').textContent = `${gameData.experience}/${gameData.expToNextLevel}`;
+            document.getElementById('bg-name').textContent = gameData.background;
+            
+            const xpPercent = (gameData.experience / gameData.expToNextLevel) * 100;
+            document.getElementById('xp-bar').style.width = `${xpPercent}%`;
+            
+            // Применяем фон
+            applyBackground();
+        }
+
+        // Применение фона
+        function applyBackground() {
+            const backgrounds = {
+                'default': 'linear-gradient(135deg, #1a1a2e, #16213e)',
+                'forest': 'linear-gradient(135deg, #2d5a27, #1e3c1e)',
+                'ocean': 'linear-gradient(135deg, #1a5276, #154360)',
+                'fire': 'linear-gradient(135deg, #b03a2e, #78281f)'
+            };
+            
+            if (gameData.background.startsWith('custom_')) {
+                const bgUrl = localStorage.getItem(gameData.background);
+                if (bgUrl) {
+                    document.body.style.backgroundImage = `url(${bgUrl})`;
+                }
+            } else {
+                document.body.style.backgroundImage = 'none';
+                document.body.style.background = backgrounds[gameData.background] || backgrounds['default'];
+            }
+        }
+
+        // Битва с монстром
+        function startBattle() {
+            const monsters = ['🐉 Дракон', '👹 Гоблин', '🧟 Зомби', '🐺 Оборотень'];
+            const monster = monsters[Math.floor(Math.random() * monsters.length)];
+            const victory = Math.random() > 0.3;
+            
+            if (victory) {
+                const coins = Math.floor(Math.random() * 30) + 20;
+                const exp = Math.floor(Math.random() * 25) + 15;
+                
+                gameData.coins += coins;
+                gameData.experience += exp;
+                
+                showResult('ПОБЕДА! ⚔️', 
+                    `Ты победил ${monster}!\n\n` +
+                    `💰 Получено: ${coins} монет\n` +
+                    `⭐ Опыт: +${exp}`, 'success');
+            } else {
+                const loss = Math.floor(Math.random() * 15) + 5;
+                gameData.coins = Math.max(0, gameData.coins - loss);
+                
+                showResult('ПОРАЖЕНИЕ 💀', 
+                    `${monster} оказался слишком сильным!\n\n` +
+                    `💰 Потеряно: ${loss} монет\n` +
+                    `💪 Попробуй снова!`, 'failure');
+            }
+            
+            checkLevelUp();
+            updateUI();
+            saveToLocal();
+        }
+
+        // Поиск сокровища
+        function findTreasure() {
+            const treasures = [
+                { name: '💎 Драгоценный камень', coins: 100, exp: 50 },
+                { name: '💰 Мешок золота', coins: 75, exp: 30 },
+                { name: '⚱️ Древняя ваза', coins: 50, exp: 20 },
+                { name: '📜 Старая карта', coins: 25, exp: 15 },
+                { name: '🍖 Яблоко', coins: 10, exp: 5 }
+            ];
+            
+            const treasure = treasures[Math.floor(Math.random() * treasures.length)];
+            
+            gameData.coins += treasure.coins;
+            gameData.experience += treasure.exp;
+            
+            showResult('СОКРОВИЩЕ НАЙДЕНО! 🎁', 
+                `Ты нашел: ${treasure.name}\n\n` +
+                `💰 Получено: ${treasure.coins} монет\n` +
+                `⭐ Опыт: +${treasure.exp}`, 'treasure');
+            
+            checkLevelUp();
+            updateUI();
+            saveToLocal();
+        }
+
+        // Магический квест
+        function magicQuest() {
+            const quests = [
+                { name: '🔮 Исцеление деревни', reward: 80 },
+                { name: '✨ Создание зелья', reward: 60 },
+                { name: '📖 Изучение свитка', reward: 40 }
+            ];
+            
+            const quest = quests[Math.floor(Math.random() * quests.length)];
+            const exp = Math.floor(Math.random() * 35) + 20;
+            
+            gameData.coins += quest.reward;
+            gameData.experience += exp;
+            
+            showResult('КВЕСТ ВЫПОЛНЕН! 🌟', 
+                `${quest.name}\n\n` +
+                `💰 Награда: ${quest.reward} монет\n` +
+                `⭐ Опыт: +${exp}`, 'success');
+            
+            checkLevelUp();
+            updateUI();
+            saveToLocal();
+        }
+
+        // Проверка повышения уровня
+        function checkLevelUp() {
+            while (gameData.experience >= gameData.expToNextLevel) {
+                gameData.level++;
+                gameData.experience -= gameData.expToNextLevel;
+                gameData.expToNextLevel = gameData.level * 100;
+                
+                showResult('НОВЫЙ УРОВЕНЬ! 🎉', 
+                    `Поздравляем! Ты достиг ${gameData.level} уровня!\n\n` +
+                    `🎯 Новые возможности открыты!`, 'success');
+            }
+        }
+
+        // Показать результат
+        function showResult(title, text, type) {
+            const result = document.getElementById('result');
+            result.style.display = 'block';
+            result.className = `result ${type}`;
+            document.getElementById('result-title').textContent = title;
+            document.getElementById('result-text').innerHTML = text.replace(/\n/g, '<br>');
+        }
+
+        // Скрыть результат
+        function hideResult() {
+            document.getElementById('result').style.display = 'none';
+        }
+
+        // Загрузка фона
+        function uploadBackground(file) {
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const bgKey = `custom_${Date.now()}`;
+                    localStorage.setItem(bgKey, e.target.result);
+                    gameData.background = bgKey;
+                    updateUI();
+                    saveToLocal();
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Смена фона
+        function changeBackground(bg) {
+            gameData.background = bg;
+            updateUI();
+            saveToLocal();
+        }
+
+        // Локальное сохранение
+        function saveToLocal() {
+            localStorage.setItem('fantasyRpgSave', JSON.stringify(gameData));
+        }
+
+        // Сохранение игры в Telegram
+        function saveGame() {
+            saveToLocal();
+            if (window.Telegram && Telegram.WebApp) {
+                Telegram.WebApp.sendData(JSON.stringify(gameData));
+                showResult('СОХРАНЕНО! 💾', 'Данные игры успешно сохранены в Telegram!', 'success');
+            } else {
+                showResult('СОХРАНЕНО! 💾', 'Данные обновлены локально.', 'success');
+            }
+        }
+
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', function() {
+            loadGameData();
+            
+            // Инициализация Telegram Web App
+            if (window.Telegram && Telegram.WebApp) {
+                Telegram.WebApp.ready();
+                Telegram.WebApp.expand();
+                
+                // Получаем данные от бота
+                const initData = Telegram.WebApp.initDataUnsafe;
+                if (initData.user) {
+                    console.log('User:', initData.user);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
